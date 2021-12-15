@@ -1,0 +1,137 @@
+test cases
+const x= ["-5--5*5+10/2*2+0.5",         //30.5
+          "1.5--3.5+10/-2+0*3",         // 0
+          "-9/0+5+10-1000000",          // -infinitnewStr
+          "90-5+8*3.5+5/2*4-30",        //93
+          "20*3--5/-1--20+2.5*2*2/2",   // 80
+          "2.225*2-3+1/2",
+          "-9/5"];             // 1.95000000002
+
+
+input logic
+*** SUBTRACT ***
+array length = 0
+    nothing                 -            => concat to output
+array length = 1
+    number                  -            => concat to output
+    +*/                     -            => replace operator
+    -                       -            => do nothing
+array length > 1
+    number     +-*/         -            => concat to output
+    +-*/       number       -            => concat to output
+    +-*/         -          -            => do nothing
+    number     number       -            => concat to output
+    5.         +-*/         -            => replace operator
+    5            .          -            => concat to output
+    .            5          -            => concat to output
+
+
+*** ADD ***
+array length = 0
+    nothing                 +            => concat to output
+array length = 1
+    number                  +            => concat to output
+    -*/                     +            => replace operator
+    +                       +            => do nothing
+array length > 1
+    number      +-*/        +            => replace
+    +-*/       number       +            => concat to output
+    +-*/         -          +            => replace both (9*- ,click + => 9+)
+    number     number       +            => concat to output
+    5.         +-*/         +            => replace operator
+    5            .          +            => concat to output
+    .            5          +            => concat to output
+
+
+*** MULTIPLY ***
+array length = 0
+    nothing                 *            => concat to output
+array length = 1
+    number                  *            => concat to output
+    -+/                     *            => replace operator
+    *                       *            => do nothing
+array length > 1
+    number      +-*/        *            => replace
+    +-*/       number       *            => concat to output
+    +-*/         -          *            => replace both (9+- ,click * => 9*)
+    number     number       *            => concat to output
+    5.         +-*/         *            => replace operator
+    5            .          *            => concat to output
+    .            5          *            => concat to output
+
+
+*** DIVIDE ***
+array length = 0
+    nothing                 /            => concat to output
+array length = 1
+    number                  /            => concat to output
+    -+*                     /            => replace operator
+    /                       /            => do nothing
+array length > 1
+    number      +-*/        /            => replace
+    +-*/       number       /            => concat to output
+    +-*/         -          /            => replace both (9+- ,click / => 9/)
+    number     number       /            => concat to output
+    5.         +-*/         /            => replace operator
+    5            .          /            => concat to output
+    .            5          /            => concat to output
+
+
+*** NUMBER ***
+input = 0 (length = 0)
+        => input = number, concat to output
+input = +-*/
+        => input = number, concat to output
+input = number
+        => concat to output, concat to output
+
+*** DOT ***
+array length = 0
+    nothing                     .               => concat "0."
+array length = 1
+    number                      .               => concat "."
+    +-*/                        .               => concat "0."
+array length > 1
+    number       .              .               => do nothing
+    number      +-*/            .               => concat "0."
+    +-*/         -              .               => concat "0."
+    number      number          .               => if .123 => do nothing else if 1 + 23 => concat "."
+    .           number          .               => do nothing
+    +-*/        number          .               => concat "."
+
+
+*** EQUAL ***
++*/ 7                           => not allowed
+contain "="                     => not allowed
+*/7.(7)                         => not allowed
+
+
+*** RESULT ***
+""                              => NaN
++-*/                            => NaN
+number                          => number=number
+7(+-*/ hoặc --)                 => 7
+20.                             => 20
+20.5                            => 20.5
+-20.                            => -20
+-20.5                           => -20.5
+-7                              => -7
++7                              => 7
++7.                             => 7
+
+handle logic: fomula logic (*/ first, +- second)
+- replace all "--" with "+"
+- split number: 7.    7.6      89
+- remove undefined and ""
+- go into for loop to calculate * & / (special cases: *-, /-)
+- go into for loop to calculate + & - (special cases: +-, - at index 0)
+- join back to string
+
+example:
+5 + 5 x 5 - 10;
+
+x = 25
+5 = ""
+5 = ""
+remove both "", set i-=1
+=> 5 + 25 - 10
