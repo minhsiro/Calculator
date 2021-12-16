@@ -461,7 +461,7 @@ const handleOutput = (str) => {
             newStr[i] = parseFloat(newStr[i-1]) - parseFloat(newStr[i+1]);
             newStr[i-1] = "";
             newStr[i+1] = "";
-            i-=1;
+            i-=1; // might not be necessary
           }
         }
       }
